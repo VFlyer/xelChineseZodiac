@@ -18,6 +18,7 @@ public class ChineseZodiac : MonoBehaviour {
     int curYearIndex;
     int curZodiacIndex;
     public KMBombModule module;
+    public KMAudio sound;
     int moduleID;
     static int moduleIDCounter = 1;
     bool moduleSolved;
@@ -118,6 +119,7 @@ public class ChineseZodiac : MonoBehaviour {
                 module.HandlePass();
                 moduleSolved = true;
                 Debug.LogFormat("[Chinese Zodiac #{0}] That was correct.  Module solved.", moduleID);
+                sound.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.CorrectChime, transform);
             }
             else
             {
