@@ -192,4 +192,98 @@ public class ChineseZodiac : MonoBehaviour {
         }
         return element + " " + animal;
     }
+    private string TwitchHelpMessage = "Use '!{0} cycle year/zodiac' to cycle the year or or zodiac | Use '!{0} toggle year/zodiac' to show the next year or zodiac |Use e.g. '!{0} submit 1804 wood rat' to sumbit an answer.";
+    private IEnumerator ProcessTwitchCommand(string command)
+    {
+        command = command.ToLowerInvariant();
+        string[] commandArray = command.Split(' ');
+        bool validZodiac = false;
+        if (commandArray[0] == "cycle" && commandArray.Length == 2)
+        {
+            if (commandArray[1] == "year")
+            {
+                yield return null;
+                for (var x = 0; x < 5; x++)
+                {
+                    yield return "trywaitcancel 1.5 Cycling the years has been canceled!";
+                    year.OnInteract();
+                }
+            }
+            else if (commandArray[1] == "zodiac")
+            {
+                yield return null;
+                for (var x = 0; x < 5; x++)
+                {
+                    yield return "trywaitcancel 1.5 Cycling the zodiacs has been canceled!";
+                    zodiac.OnInteract();
+                }
+            }
+        }
+        else if (commandArray[0] == "toggle" && commandArray.Length == 2)
+        {
+            if (commandArray[1] == "year")
+            {
+                yield return null;
+                year.OnInteract();
+            }
+            else if (commandArray[1] == "zodiac")
+            {
+                yield return null;
+                zodiac.OnInteract();
+            }
+        }
+        else
+        {
+            if (!(commandArray[0] == "submit") || commandArray.Length != 4)
+            {
+                yield return "sendtochaterror Invalid command.";
+                yield break;
+            }
+            foreach (string text in zodiacOptions)
+            {
+                if (logZodiac(text).ToLowerInvariant() == commandArray[2] + " " + commandArray[3])
+                {
+                    validZodiac = true;
+                }
+            }
+            if (!yearOptions.Contains(commandArray[1]) || !validZodiac)
+            {
+                yield return "sendtochaterror Invalid command.";
+                yield break;
+            }
+            yield return null;
+            do
+            {
+                yield return new WaitForSeconds(.1f);
+                zodiac.OnInteract();
+            }
+            while (logZodiac(zodiac.GetComponentInChildren<TextMesh>().text).ToLowerInvariant() != commandArray[2] + " " + commandArray[3]);
+            do
+            {
+                yield return new WaitForSeconds(.1f);
+                year.OnInteract();
+            }
+            while (year.GetComponentInChildren<TextMesh>().text != commandArray[1]);
+            sumbit.OnInteract();
+        }
+        yield break;
+    }
+    private IEnumerator TwitchHandleForcedSolve()
+    {
+        yield return null;
+        do
+        {
+            zodiac.OnInteract();
+            yield return new WaitForSeconds(0.1f);
+        }
+        while (zodiac.GetComponentInChildren<TextMesh>().text != correctZodiac);
+        do
+        {
+            year.OnInteract();
+            yield return new WaitForSeconds(0.1f);
+        }
+        while (year.GetComponentInChildren<TextMesh>().text != correctYear);
+        sumbit.OnInteract();
+        yield break;
+    }
 }

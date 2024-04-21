@@ -1021,6 +1021,7 @@ MonoBehaviour:
   zodiac: {fileID: 114759906065056730}
   sumbit: {fileID: 114499015997216320}
   module: {fileID: 114978770887742828}
+  sound: {fileID: 114162791565766274}
 --- !u!114 &114499015997216320
 MonoBehaviour:
   m_ObjectHideFlags: 1
